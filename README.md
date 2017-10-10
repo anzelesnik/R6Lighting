@@ -1,2 +1,21 @@
 # R6Lighting
-Support for lighting effects on Corsair keyboards and Rainbow Six Siege
+This is just a simple project I am working on, which get's data from the game Rainbow Six Siege and turns it into effects on Corsair keyboards with the help of CUE SDK and CUE.NET library by @DarthAffe.
+
+Unfortunately this does only work offline due to Battleye's memory protection. There is a way to get around it, but there is a chance of getting banned!
+
+## Current Support
+
+Currently the program displays the following on the keyboard:
+
+-Health (numbers from 1 to 0, adjusted brightness)
+
+-Ammo ("R" fades when a reload is suggested)
+
+## Notes
+
+I will be adding new features in the future as I currently have free time and I'm doing this for fun and to practice C# :)
+Fell free to to use this crappy source code if you want and opinions and improvement ideas are welcome.
+
+
+
+
