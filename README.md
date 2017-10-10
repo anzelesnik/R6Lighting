@@ -16,6 +16,8 @@ Currently the program displays the following on the keyboard:
 I will be adding new features in the future as I currently have free time and I'm doing this for fun and to practice C# :)
 Fell free to to use this crappy source code if you want and opinions and improvement ideas are welcome.
 
+After compiling you need to include the DLL and the folders found in bin/x64/Release in the executable folder!
+
 
 
 
