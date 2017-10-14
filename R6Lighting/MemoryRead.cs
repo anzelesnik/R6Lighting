@@ -5,6 +5,15 @@ using System.Diagnostics;
 
 namespace R6Lighting
 {
+    public struct MemData
+    {
+        public static readonly int[] LocalPlayer = { 0x1B8, 0x48, 0x80 };
+        public static readonly int[] health = { 0x3E8, 0x12C };
+        public static readonly int[] ammo = { 0x3D8, 0x160 };
+        public static readonly int[] SecGadget = { 0x460, 0x64C };
+        public static readonly int[][] AllOffsets = { health, ammo, SecGadget };
+    }
+
     public class ReadMem
     {
         [DllImport("kernel32.dll")]
@@ -45,27 +54,48 @@ namespace R6Lighting
             }
         }
 
-        public static int FinalAddress(IntPtr PlayerBase, int[] offsets, IntPtr handle) // Has to be constanly re-read due to constant variable address changes
+        public static int[] DataValues(IntPtr PlayerBase, IntPtr handle) // Has to be constanly re-read due to constant variable address changes
         {
             IntPtr CurPointer = PlayerBase;
             int value = 0;
-            for (int i = 0; i<offsets.Length; i++) // Read multilevel pointer
+            int valueHp = 0;
+            int valueAmmo = 0;
+            int valueGadget = 0;
+            byte[] buffer = new byte[8];
+            for (int i = 0; i<MemData.LocalPlayer.Length; i++) // Read The LoacalPlayer address
             {
-                int CurOffset = offsets[i];
+                int CurOffset = MemData.LocalPlayer[i];
                 IntPtr pointer = IntPtr.Add(CurPointer, CurOffset);
-                byte[] buffer = new byte[8];
                 ReadProcessMemory(handle, pointer, buffer, 8, 0);
-                if (i == 4)
+                Int64 NextPointer = BitConverter.ToInt64(buffer, 0);
+                CurPointer = new IntPtr(NextPointer);
+            }
+            IntPtr hp = IntPtr.Add(CurPointer, MemData.health[0]); // Adds the first offset for the specific item
+            IntPtr ammo = IntPtr.Add(CurPointer, MemData.ammo[0]);
+            IntPtr gadget = IntPtr.Add(CurPointer, MemData.SecGadget[0]);
+            IntPtr[] pointers = { hp, ammo, gadget };
+            for (int i = 0; i<pointers.Length; i++) // Reads the pointers, adds the final offset, reads again and return's the value for all items
+            {
+                ReadProcessMemory(handle, pointers[i], buffer, 8, 0);
+                Int64 NextPointer = BitConverter.ToInt64(buffer, 0);
+                IntPtr pointer = new IntPtr(NextPointer+MemData.AllOffsets[i][1]);
+                ReadProcessMemory(handle, pointer, buffer, 8, 0);
+                value = BitConverter.ToInt32(buffer, 0);
+                switch (i)
                 {
-                    value = buffer[0];
-                }
-                else
-                {
-                    Int64 NextPointer = BitConverter.ToInt64(buffer, 0);
-                    CurPointer = new IntPtr(NextPointer);
+                    case 0:
+                        valueHp = value;
+                        break;
+                    case 1:
+                        valueAmmo = value;
+                        break;
+                    case 2:
+                        valueGadget = value;
+                        break;
                 }
             }
-            return value;
+            int[] AllValues = {valueHp, valueAmmo, valueGadget};
+            return AllValues;
         }
     }
 }
