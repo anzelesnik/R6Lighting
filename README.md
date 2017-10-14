@@ -9,7 +9,9 @@ Currently the program displays the following on the keyboard:
 
 -Health (numbers from 1 to 0, adjusted brightness)
 
--Ammo ("R" fades when a reload is suggested)
+-Ammo ('R' fades when a reload is suggested)
+
+-Secondary Gadget ('G' is red when gadget is still available)
 
 ## Notes
 
