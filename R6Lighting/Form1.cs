@@ -73,6 +73,7 @@ namespace R6Lighting
                     label3.ForeColor = Color.Red;
                     label7.Text = "Not running";
                     label7.ForeColor = Color.Red;
+                button1.Enabled = false;
             }
         }
 
