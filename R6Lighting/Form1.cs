@@ -10,10 +10,7 @@ namespace R6Lighting
     {
         IntPtr PlayerBase;
         IntPtr handle;
-        int valueHp;
-        int valueAmmo;
-        int[] HealthOffsets = { 0x1B8, 0x48, 0x80, 0x3E8, 0x12C };
-        int[] AmmoOffsets = { 0x1B8, 0x48, 0x80, 0x3D8, 0x160 };
+        int[] AllValues;
 
         public Form1(string[] args)
         {
@@ -49,13 +46,12 @@ namespace R6Lighting
                     {
                         label7.Text = "Error";
                         label7.ForeColor = Color.Red;
-                    }
+                    } 
                     handle = ReadMem.OpenProc("RainbowSix"); // Get the games handle
                 }
                 string statusmsg = LightingCtrl.Initialize(); // Initialize CUE.NET
                 label4.Text = statusmsg;
                 StatusMsg(statusmsg); // Change the UI text according to the response from CUE.NET
-                Debug.WriteLine(handle);
                 if (statusmsg != "Keyboard not found")
                 {
                     PlayerBase = ReadMem.PlayerBase(0x046DFCA0, handle); // Get the playerbase of the game
@@ -117,10 +113,10 @@ namespace R6Lighting
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            valueHp = ReadMem.FinalAddress(PlayerBase, HealthOffsets, handle); // Read the health value
-            valueAmmo = ReadMem.FinalAddress(PlayerBase, AmmoOffsets, handle); // Read the ammo value
-            LightingCtrl.HpLighting(valueHp); // Change the effects accordingly to the read values
-            LightingCtrl.ReloadLighting(valueAmmo, valueHp);
+            AllValues = ReadMem.DataValues(PlayerBase, handle); // Read all values (0 = hp, 1 = ammo, 2 = gadget)
+            LightingCtrl.HpLighting(AllValues[0]); // Change the effects accordingly to the read values
+            LightingCtrl.ReloadLighting(AllValues[1], AllValues[0]);
+            LightingCtrl.GadgetLighting(AllValues[2]);
         }
     }
 }
