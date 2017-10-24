@@ -1,8 +1,6 @@
 # R6Lighting
 This is just a simple project I am working on, which get's data from the game Rainbow Six Siege and turns it into effects on Corsair keyboards with the help of CUE SDK and CUE.NET library by @DarthAffe.
 
-Unfortunately this does only work offline due to Battleye's memory protection. There is a way to get around it, but there is a chance of getting banned!
-
 ## Current Support
 
 Currently the program displays the following on the keyboard:
@@ -12,6 +10,13 @@ Currently the program displays the following on the keyboard:
 -Ammo ('R' fades when a reload is suggested)
 
 -Secondary Gadget ('G' is red when gadget is still available)
+
+-TeamID (background lighting adjusted according to the team LocalPlayer is in)
+
+## Battleye Bypass
+
+I have implemented hLeaker by @Schnocker in the Launcher. I suggest you at least encrypt the shellcodes before using it. You have to open the game first, then R6Lighting. Also, currently you have to hardcode in the base address for the game because I can't get it to work by getting it dynamically for some reason (check R6Lighting/MemoryRead.cs).
+**WARNING!** There is a chance of getting banned. I am not responsible for any bans, neither is @Schnocker!
 
 ## Notes
 
