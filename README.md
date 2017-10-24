@@ -24,9 +24,7 @@ I have implemented hLeaker by @Schnocker in the Launcher. I suggest you at least
 I will be adding new features in the future as I currently have free time and I'm doing this for fun and to practice C# :)
 Fell free to to use this crappy source code if you want and opinions and improvement ideas are welcome.
 
-**After compiling you need to include the DLL and the folders found in bin/x64/Release in the executable folder!**
-
-**Also Contents of bin/x64/Release once compiled, need to be placed inside a folder called "Stuff" which needs to be in the same directory as "Launcher.exe"**
+**Contents of R6Lighting/bin/x64/Release once compiled, need to be placed inside a folder called "Stuff" which needs to be in the same directory as "Launcher.exe"!**
 
 
 
