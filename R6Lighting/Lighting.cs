@@ -43,16 +43,25 @@ namespace R6Lighting
             }
         }
 
-        public static void BaseLighting()
+        public static void TeamLighting(int teamValue)
         {
             CorsairKeyboard keyboard = CueSDK.KeyboardSDK;
-            SolidColorBrush brushBackground = new SolidColorBrush(Color.White);
-            brushBackground.Brightness = 0.3F;
-            keyboard.Brush = brushBackground; // Change all LEDs on keyboard to the brush
+            if(teamValue == 0)
+            {
+                SolidColorBrush blueTeam = new SolidColorBrush(Color.Blue);
+                blueTeam.Brightness = 0.4F;
+                keyboard.Brush = blueTeam;
+            }
+            else
+            {
+                SolidColorBrush orangeTeam = new SolidColorBrush(Color.OrangeRed);
+                orangeTeam.Brightness = 0.4F;
+                keyboard.Brush = orangeTeam;
+            }
             keyboard.Update();
         }
 
-        public static void GadgetLighting(int gadget)
+        public static void GadgetLighting(int gadget, int teamValue)
         {
             ILedGroup LedGroup = new ListLedGroup(Stuff.keyboard, true, CorsairLedId.G);
             if (gadget > 0)
@@ -61,37 +70,59 @@ namespace R6Lighting
             }
             else
             {
-                LedGroup.Brush = Stuff.brushWhite; // No more gadgets
+                if (teamValue == 0)
+                {
+                    SolidColorBrush blueTeam = new SolidColorBrush(Color.Blue);
+                    blueTeam.Brightness = 0.4F;
+                    LedGroup.Brush = blueTeam;
+                }
+                else
+                {
+                    SolidColorBrush orangeTeam = new SolidColorBrush(Color.OrangeRed);
+                    orangeTeam.Brightness = 0.4F;
+                    LedGroup.Brush = orangeTeam;
+                }
             }
             Stuff.keyboard.Update();
         }
 
-        public static void ReloadLighting(int ammo, int hp)
+        public static void ReloadLighting(int ammo, int hp, int teamValue)
         {
             SolidColorBrush fade = new SolidColorBrush(Color.Green);
             ILedGroup LedGroup = new ListLedGroup(Stuff.keyboard, true, CorsairLedId.R);
-            if ((ammo <= 8) && (hp > 0) && (ammo >= 0)) // Check if the ammo amount in the mag is less or equal to 8
-            {
-                for(double i = 0; i<=1; i += 0.03) // Fade in
+            if ((ammo <= 8) && (hp > 0) && (ammo >= 0)) // TODO Move this to new thread for performance optimization
+            { 
+                for (double i = 0; i <= 1; i += 0.03) // Fade in            
                 {
                     fade.Brightness = (float)i;
                     LedGroup.Brush = fade;
-                    Task.Delay(15).Wait();
                     Stuff.keyboard.Update();
+                    Task.Delay(15).Wait();
                 }
                 for (double i = 1; i >= 0; i -= 0.03) // Fade out
                 {
                     fade.Brightness = (float)i;
                     LedGroup.Brush = fade;
-                    Task.Delay(15).Wait();
                     Stuff.keyboard.Update();
+                    Task.Delay(15).Wait();
                 }
             }
             else
             {
-                LedGroup.Brush = new SolidColorBrush(Color.White); // If mag is full change the LED back to white
-                Stuff.keyboard.Update();
+                if (teamValue == 0)
+                {
+                    SolidColorBrush blueTeam = new SolidColorBrush(Color.Blue);
+                    blueTeam.Brightness = 0.4F;
+                    LedGroup.Brush = blueTeam;
+                }
+                else
+                {
+                    SolidColorBrush orangeTeam = new SolidColorBrush(Color.OrangeRed);
+                    orangeTeam.Brightness = 0.4F;
+                    LedGroup.Brush = orangeTeam;
+                }
             }
+            Stuff.keyboard.Update();
         }
 
         public static void HpLighting(int hp)
@@ -107,7 +138,20 @@ namespace R6Lighting
             ILedGroup n9 = new ListLedGroup(Stuff.keyboard, true, CorsairLedId.D9);
             ILedGroup n0 = new ListLedGroup(Stuff.keyboard, true, CorsairLedId.D0);
             SolidColorBrush lastBrush = new SolidColorBrush(Color.Red);
-            if ((hp > 90) && (hp<=100)) // Changes the LEDs according to the amount of HP
+            if (hp > 100)
+            {
+                n1.Brush = Stuff.brushGreen;
+                n2.Brush = Stuff.brushGreen;
+                n3.Brush = Stuff.brushGreen;
+                n4.Brush = Stuff.brushGreen;
+                n5.Brush = Stuff.brushGreen;
+                n6.Brush = Stuff.brushGreen;
+                n7.Brush = Stuff.brushGreen;
+                n8.Brush = Stuff.brushGreen;
+                n9.Brush = Stuff.brushGreen;
+                n0.Brush = Stuff.brushGreen;
+            }
+            else if ((hp > 90) && (hp<=100)) // Changes the LEDs according to the amount of HP
             {
                 n1.Brush = Stuff.brushRed;
                 n2.Brush = Stuff.brushRed;

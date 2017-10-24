@@ -8,6 +8,7 @@ namespace R6Lighting
     public struct MemData
     {
         public static readonly int[] LocalPlayer = { 0x1B8, 0x48, 0x80 };
+        public static readonly int[] TeamID = { 0x590, 0x0, 0x4E8, 0x120, 0x140 };
         public static readonly int[] health = { 0x3E8, 0x12C };
         public static readonly int[] ammo = { 0x3D8, 0x160 };
         public static readonly int[] SecGadget = { 0x460, 0x64C };
@@ -35,12 +36,20 @@ namespace R6Lighting
             }
         }
 
-        public static IntPtr PlayerBase(int baseOffset, IntPtr handle)
+        public static IntPtr PlayerBase(int baseOffset, IntPtr handle, bool beBypassed)
         {
             try
             {
-                Process proc = Process.GetProcessesByName("RainbowSix")[0];
-                IntPtr baseadd = proc.MainModule.BaseAddress; // Get games' entry point address in memory
+                IntPtr baseadd;
+                if (beBypassed)
+                {
+                    baseadd = new IntPtr(0x7FF709B30000); // proc.MainModule.BaseAddress; would be a better solution but it fails for unknown reason, so you have to get the base address on your own and hardcode it in :/
+                }
+                else
+                {
+                    Process proc = Process.GetProcessesByName("RainbowSix")[0];
+                    baseadd = proc.MainModule.BaseAddress;
+                }
                 byte[] buffer = new byte[8];
                 IntPtr pointer = IntPtr.Add(baseadd, baseOffset); // Add up the games' entry point address and the offset to get the playerbase
                 ReadProcessMemory(handle, pointer, buffer, 8, 0); // Read the playerbase
@@ -48,10 +57,33 @@ namespace R6Lighting
                 IntPtr pBase = new IntPtr(pBaseInt);
                 return pBase;
             }
-            catch
+            catch 
             {
                 return IntPtr.Zero;
             }
+        }
+
+        public static int TeamID(IntPtr PlayerBase, IntPtr handle)
+        {
+            IntPtr CurPointer = PlayerBase; // PlayerBase is the game base address + 0x046DFCA0
+            int value = 1;
+            for (int i = 0; i < MemData.TeamID.Length; i++)
+            {
+                int CurOffset = MemData.TeamID[i];
+                IntPtr pointer = IntPtr.Add(CurPointer, CurOffset);
+                byte[] buffer = new byte[8];
+                ReadProcessMemory(handle, pointer, buffer, 8, 0);
+                if (i == MemData.TeamID.Length-1)
+                {
+                    value = buffer[0];
+                }
+                else
+                {
+                    Int64 NextPointer = BitConverter.ToInt64(buffer, 0);
+                    CurPointer = new IntPtr(NextPointer);
+                }
+            }
+            return value; // returns the value of the final address 
         }
 
         public static int[] DataValues(IntPtr PlayerBase, IntPtr handle) // Has to be constanly re-read due to constant variable address changes
