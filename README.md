@@ -15,7 +15,7 @@ Currently the program displays the following on the keyboard:
 
 ## Battleye Bypass
 
-I have implemented hLeaker by @Schnocker in the Launcher. I suggest you at least encrypt the shellcodes before using it. You have to open the game first, then R6Lighting. Also, currently you have to hardcode in the base address for the game because I can't get it to work by getting it dynamically for some reason (check R6Lighting/MemoryRead.cs).
+I have implemented hLeaker by @Schnocker in the Launcher. I suggest you at least encrypt the shellcodes before using it. You have to open the game first, then R6Lighting. Also, currently you have to hardcode in the base address for the game because I can't get it to work by getting it dynamically for some reason (check R6Lighting/MemoryRead.cs). The launcher will probably crash after opening R6Lighting! Working on a fix.
 
 **WARNING!** There is a chance of getting banned. I am not responsible for any bans, neither is @Schnocker!
 
